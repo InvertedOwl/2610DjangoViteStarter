@@ -1,7 +1,8 @@
+/* https://coolors.co/palette/ef476f-ffd166-06d6a0-118ab2-073b4c */
 const color = {
-    "start": "#45CB85",
-    "normal": "#57E2E5",
-    "label": "#6A7FDB"
+    "start": "#06d6a0",
+    "normal": "#ffd166",
+    "label": "#ef476f"
 };
 
 const nodes = [

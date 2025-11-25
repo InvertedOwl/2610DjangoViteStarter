@@ -23,6 +23,8 @@ export default function Node(props) {
 
     // Edit block data param value
     function handleParamChange(paramIndex, e) {
+        if (props.display === true) return;
+
         const { value } = e.target;
 
         console.log(props.blocks)
@@ -43,6 +45,7 @@ export default function Node(props) {
                                 let newValue = value;
                                 if (param.type === "number") {
                                     newValue = value === "" ? "" : Number(value);
+                                    newValue = Math.min(Math.max(newValue, 0), 9);
                                 }
 
                                 return {
@@ -86,8 +89,13 @@ export default function Node(props) {
                         <p className="spacer">{part}</p>
                         {hasParamHere && params[paramIndex] && (
                             <input
-                                className="param"
-                                value={params[paramIndex].value ?? ""}
+                                className={"param" + (params[paramIndex].type === "number" ? " param-number" : "")}
+                                type={params[paramIndex].type === "number" ? "number" : "text"}
+                                value={
+                                    params[paramIndex].type === "number"
+                                        ? (params[paramIndex].value === "" ? "" : String(Number(params[paramIndex].value)))
+                                        : (params[paramIndex].value ?? "")
+                                }
                                 onChange={(e) => handleParamChange(paramIndex, e)}
                             />
                         )}

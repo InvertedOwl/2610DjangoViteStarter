@@ -5,3 +5,53 @@
     overflow: hidden;
     font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
+
+
+.control-button {
+    position: absolute;
+    top: 100px;
+    left: 170px;
+    z-index: 1000;
+    font-size: 16px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+.play-button {
+    background-color: rgb(93, 174, 93);
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 20px;
+}
+.stop-button {
+    background-color: rgb(229, 121, 121);
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 20px;
+}
+
+
+.left {
+    width: 220px;
+    height: 100%;
+    background-color: #282c34;
+    box-shadow: 1px 10px 24px 0px rgba(0,0,0,0.25);
+    position: relative;
+    z-index: 9;
+}
+.right {
+    width: 200px;
+    height: 100%;
+    background-color: #282c34;
+    box-shadow: 1px 10px 24px 0px rgba(0,0,0,0.25);
+    position: relative;
+    z-index: 9;
+}
+.body {
+    display: flex;
+    height: 100%;
+}

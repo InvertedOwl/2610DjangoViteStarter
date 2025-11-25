@@ -86,11 +86,34 @@ export const Block = (props) => {
         const canvasRect = props.canvasRef.current?.getBoundingClientRect();
         if (!canvasRect) return;
 
+        const selfBlock = document.querySelector(`.block[data-block-id="${props.id}"]`);
+
+        const selfBlockRect = selfBlock.getBoundingClientRect();
+
+        // Bounds of the self block (start = left edge) in canvas coordinates
+        const selfStart = selfBlockRect.left - canvasRect.left;
+        const selfTop = selfBlockRect.top - canvasRect.top;
+        const selfBottom = selfBlockRect.bottom - canvasRect.top;
+
+
+        // Lock to screen edges
+        setBlockData((prevBlocks) => {
+            const newBlocks = [...prevBlocks];
+            const targetBlock = { ...newBlocks[props.id] };
+            targetBlock.position = {
+                x: Math.min(Math.max(targetBlock.position?.x || 0, 0), canvasRect.width - (selfBlockRect?.width || 0)),
+                y: Math.min(Math.max(targetBlock.position?.y || 0, 0), canvasRect.height - (selfBlockRect?.height || 0)),
+            };
+            newBlocks[props.id] = targetBlock;
+            return newBlocks;
+        });
+
+        // Search for merge target
         for (let b = 0; b < props.blocks.length; b++) {
             // Ignore self
             if (b === props.id) continue;
 
-            // Find the actual DOM element for this block
+            // Find the actual DOM element for this iterated block
             const blockEl = document.querySelector(`.block[data-block-id="${b}"]`);
             if (!blockEl) continue;
 
@@ -99,15 +122,13 @@ export const Block = (props) => {
             const blockTop = blockRect.top - canvasRect.top;
             const blockBottom = blockRect.bottom - canvasRect.top;
 
-            const blockWidth = blockRect.width;
-
-            const mergeZoneWidth = blockWidth * 0.75;
+            const mergeZoneWidth = 30;
 
             if (
-                canvasX >= blockRight &&
-                canvasX <= blockRight + mergeZoneWidth &&
-                canvasY >= blockTop &&
-                canvasY <= blockBottom
+                selfStart >= blockRight - mergeZoneWidth &&
+                selfStart <= blockRight + mergeZoneWidth &&
+                selfTop < blockBottom &&
+                selfBottom > blockTop
             ) {
                 // move all children from block[b] to current block
                 setBlockData((prevBlocks) => {
@@ -118,7 +139,7 @@ export const Block = (props) => {
 
                     // Append target children to the source
                     sourceBlock.children = sourceBlock.children.concat(
-                    targetBlock.children
+                        targetBlock.children
                     );
                     newBlocks[props.id] = sourceBlock;
 
@@ -135,14 +156,14 @@ export const Block = (props) => {
     function nodeMove(nodeIndex, dx, dy, blockId = props.id) {
         if (nodeIndex === 0) {
             setBlockData((prevBlocks) => {
-            const newBlocks = [...prevBlocks];
-            const targetBlock = { ...newBlocks[blockId] };
-            targetBlock.position = {
-                x: (targetBlock.position?.x || 0) + dx,
-                y: (targetBlock.position?.y || 0) + dy,
-            };
-            newBlocks[blockId] = targetBlock;
-            return newBlocks;
+                const newBlocks = [...prevBlocks];
+                const targetBlock = { ...newBlocks[blockId] };
+                targetBlock.position = {
+                    x: (targetBlock.position?.x || 0) + dx,
+                    y: (targetBlock.position?.y || 0) + dy,
+                };
+                newBlocks[blockId] = targetBlock;
+                return newBlocks;
             });
             return;
         }

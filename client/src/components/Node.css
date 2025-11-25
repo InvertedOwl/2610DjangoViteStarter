@@ -1,5 +1,5 @@
 .node {
-    height: 50px;
+    height: 20px;
     width: fit-content;
     background-color: #f0f0f0;
     align-items: center;
@@ -12,9 +12,7 @@
     cursor: grab;
     user-select: none;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.35);
-    padding-left: 20px;
-    padding-bottom: 20px;
-    padding-top: 20px;
+    padding: 15px;
     transition: outline 0.2s ease, box-shadow 0.2s ease;
     min-width: 65px;
 }
@@ -55,4 +53,22 @@
     padding: 5px;
     border: none;
     border-radius: 10px;
+}
+
+.param-number {
+    width: 15px;
+}
+/* Hide number input spin buttons (Chrome, Safari, Edge, Opera) */
+.param-number::-webkit-outer-spin-button,
+input.param[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Hide spin buttons / change appearance on Firefox */
+.param-number,
+input.param[type="number"] {
+    -moz-appearance: textfield; /* Firefox */
+    appearance: textfield;
+    -webkit-appearance: none; /* fallback for webkit-based */
 }

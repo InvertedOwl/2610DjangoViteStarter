@@ -6,16 +6,9 @@ import { useEffect, useRef, useState } from "react";
 export const Canvas = (props) => {
     // Blocks state
     // Callbacks for jumps should return a true or false for if it should jump
-    const [blocks, setBlocks] = useState([
-        { 
-            children: [
-                {"title": "Start", "params": [{"type": "number", "value": 0, "name": "param1"}], "callback": (params) => {}, "type": "start", "color": color.start, "active": false},
-                {"title": "Label <param>", "params": [{"type": "text", "value": "label1", "name": "labelname"}], "callback": () => {console.log('Node 3 callback')}, "type": "label", "color": color.label, "active": false},
-                {"title": "Node 4", "params": [], "callback": () => {console.log('Node 4 callback')}, "type": "normal", "color": color.normal, "active": false}, 
-                {"title": "Jump <param>", "params": [{"type": "text", "value": "label1", "name": "tolabel"}], "callback": () => {return true}, "type": "jump", "color": color.normal, "active": false}], 
-            position: { x: 50, y: 50 } 
-        }
-    ]);
+    const blocks = props.blocks;
+    const setBlocks = props.setBlocks;
+
     
     // Use ref to be able to stop async function
     const playingRef = useRef(props.playing);

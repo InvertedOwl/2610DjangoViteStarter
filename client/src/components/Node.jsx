@@ -6,6 +6,7 @@ export default function Node(props) {
     const nodeRef = useRef(null);
 
     const handleMouseDown = (e) => {
+        if (e.target.closest(".nodrag")) return;
         downRef.current = true;
 
         const rect = nodeRef.current?.getBoundingClientRect();
@@ -18,7 +19,8 @@ export default function Node(props) {
         props.onDragEnd(e, rect);            
     };
 
-    const titleParts = props.node.title.split("<param>");
+    const text = props.node.text || "";
+    const titleParts = text.split("<param>");
     const params = props.node.params || [];
 
     // Edit block data param value
@@ -45,7 +47,7 @@ export default function Node(props) {
                                 let newValue = value;
                                 if (param.type === "number") {
                                     newValue = value === "" ? "" : Number(value);
-                                    newValue = Math.min(Math.max(newValue, 0), 9);
+                                    newValue = Math.min(Math.max(newValue, 0), child.params[pIndex].max || 9);
                                 }
 
                                 return {
@@ -79,29 +81,34 @@ export default function Node(props) {
             onMouseDown={handleMouseDown}
             onMouseUp={handleMouseUp}
         >
-            {titleParts.map((part, index) => {
-                const isLastPart = index === titleParts.length - 1;
-                const hasParamHere = !isLastPart;
-                const paramIndex = index;
+            {/* Text */}
+            <h2 className="param-title">{props.node.title}</h2>
+            <div className="param-block">
+                {titleParts.map((part, index) => {
+                    const isLastPart = index === titleParts.length - 1;
+                    const hasParamHere = !isLastPart;
+                    const paramIndex = index;
 
-                return (
-                    <div key={index} className="title-part-with-param">
-                        <p className="spacer">{part}</p>
-                        {hasParamHere && params[paramIndex] && (
-                            <input
-                                className={"param" + (params[paramIndex].type === "number" ? " param-number" : "")}
-                                type={params[paramIndex].type === "number" ? "number" : "text"}
-                                value={
-                                    params[paramIndex].type === "number"
-                                        ? (params[paramIndex].value === "" ? "" : String(Number(params[paramIndex].value)))
-                                        : (params[paramIndex].value ?? "")
-                                }
-                                onChange={(e) => handleParamChange(paramIndex, e)}
-                            />
-                        )}
-                    </div>
-                );
-            })}
+                    return (
+                        <div key={index} className="title-part-with-param">
+                            <p className="spacer">{part}</p>
+                            {hasParamHere && params[paramIndex] && (
+                                <input
+                                    className={"param nodrag"}
+                                        style={{width: (params[paramIndex].type == "number") ? Math.log10(params[paramIndex].max || 9) * 9 : undefined}}
+                                    type={params[paramIndex].type === "number" ? "number" : "text"}
+                                    value={
+                                        params[paramIndex].type === "number"
+                                            ? (params[paramIndex].value === "" ? "" : String(Number(params[paramIndex].value)))
+                                            : (params[paramIndex].value ?? "")
+                                    }
+                                    onChange={(e) => handleParamChange(paramIndex, e)}
+                                />
+                            )}
+                        </div>
+                    );
+                })}
+            </div>
         </div>
     );
 }

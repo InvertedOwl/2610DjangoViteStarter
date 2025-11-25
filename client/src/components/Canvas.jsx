@@ -37,6 +37,11 @@ export const Canvas = (props) => {
 
     const toexecute = [];
     const canvasRef = useRef(null);
+    const registersRef = useRef(props.registers);
+
+    useEffect(() => {
+        registersRef.current = props.registers;
+    }, [props.registers]);
 
     useEffect(() => {
         if (props.playing) {
@@ -63,7 +68,7 @@ export const Canvas = (props) => {
 
             setNodeActive(item.blockid, item.nodeindex, true);
             await new Promise(r => setTimeout(r, 250));
-            const result = await node.callback(node.params.map(param => param.value));
+            const result = await node.callback(node.params.map(param => param.value), registersRef.current, props.setRegister);
             setNodeActive(item.blockid, item.nodeindex, false);
 
             if (!playingRef.current) {

@@ -1,0 +1,9 @@
+.registers-container {
+    color: white;
+    margin: 20px;
+    padding: 10px;
+    background-color: #1e232c;
+    border-radius: 8px;
+    font-family: monospace;
+    font-size: 15px;
+}

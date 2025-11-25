@@ -1,6 +1,5 @@
 .node {
-    height: 20px;
-    width: fit-content;
+    height: 50px;
     background-color: #f0f0f0;
     align-items: center;
     display: flex;
@@ -11,14 +10,25 @@
     font-size: 18px;
     cursor: grab;
     user-select: none;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.35);
-    padding: 15px;
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.5);
+    padding: 5px 10px;
     transition: outline 0.2s ease, box-shadow 0.2s ease;
     min-width: 65px;
+    /* max-width: 150px; */
+    white-space: normal;
+    /* flex-wrap: wrap; */
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: monospace;
 }
 
 .spacer {
     color: white;
+    padding: 0px;
+    margin: 0px;
+    letter-spacing: -2px;
+    font-size: 13px;
 }
 
 .connectedleft {
@@ -45,18 +55,19 @@
     align-items: center;    
 }
 .param {
-    width: 60px;
-    margin-left: 5px;
+    width: 50px;
+    margin-left: 3px;
     font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
     font-size: 18px;
     height: fit-content;
-    padding: 5px;
+    padding: 3px;
     border: none;
     border-radius: 10px;
+    font-size: 13px;
 }
 
 .param-number {
-    width: 15px;
+    width: 7px;
 }
 /* Hide number input spin buttons (Chrome, Safari, Edge, Opera) */
 .param-number::-webkit-outer-spin-button,
@@ -71,4 +82,29 @@ input.param[type="number"] {
     -moz-appearance: textfield; /* Firefox */
     appearance: textfield;
     -webkit-appearance: none; /* fallback for webkit-based */
+}
+
+.param-block {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.param-title {
+    margin: 0;
+    margin-bottom: 3px;
+    margin-top: 3px;
+    padding: 0;
+    font-size: 17px;
+
+    /*
+    Source - https://stackoverflow.com/a
+    Posted by bookcasey, modified by community. See post 'Timeline' for change history
+    Retrieved 2025-11-25, License - CC BY-SA 4.0
+    */
+    text-shadow: 2px 0 #fff, -2px 0 #fff, 0 2px #fff, 0 -2px #fff,
+             1px 1px #fff, -1px -1px #fff, 1px -1px #fff, -1px 1px #fff;
+
 }

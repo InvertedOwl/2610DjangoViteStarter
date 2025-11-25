@@ -5,6 +5,7 @@ import './App.css'
 import { nodes } from './nodes.js';
 import { color } from './nodes.js';
 import { Nav } from './Nav.jsx';
+import { Registers } from './components/Registers.jsx';
 
 function App() {
   const [playing, setPlaying] = useState(false);
@@ -13,13 +14,47 @@ function App() {
       { 
           children: [
               {"title": "Start", "params": [{"type": "number", "value": 0, "name": "param1"}], "callback": (params) => {}, "type": "start", "color": color.start, "active": false},
-              {"title": "Label <param>", "params": [{"type": "text", "value": "label1", "name": "labelname"}], "callback": () => {console.log('Node 3 callback')}, "type": "label", "color": color.label, "active": false},
-              {"title": "Node 4", "params": [], "callback": () => {console.log('Node 4 callback')}, "type": "normal", "color": color.normal, "active": false}, 
-              {"title": "Jump <param> if $<param> < $<param>", "params": [{"type": "text", "value": "label1", "name": "tolabel"}, {"type": "number", "value": "label1", "name": "tolabel"}, {"type": "number", "value": "label1", "name": "tolabel"}], "callback": () => {return true}, "type": "jump", "color": color.normal, "active": false}], 
+
+              {"title": "AddI", "text": "$<param> = $<param> + <param>", "params": [{"type": "number", "value": "0", "name": "tolabel"}, {"type": "number", "value": 0, "name": "tolabel"}, {"type": "number", "value": 1, "name": "tolabel"}], "callback": 
+              (params, registers, setRegister) => {
+                console.log(params)
+                setRegister(params[0], registers[params[1]] + params[2]);
+              }, "type": "normal", "color": color.normal, "active": false}, 
+
+                            {"title": "AddI", "text": "$<param> = $<param> + <param>", "params": [{"type": "number", "value": 1, "name": "tolabel"}, {"type": "number", "value": 1, "name": "tolabel"}, {"type": "number", "value": 64, "name": "tolabel", "max": 1024}], "callback": 
+              (params, registers, setRegister) => {
+                console.log(params)
+                setRegister(params[0], registers[params[1]] + params[2]);
+              }, "type": "normal", "color": color.normal, "active": false}, 
+
+              {"title": "Label", "text": "<param>", "params": [{"type": "text", "value": "label1", "name": "labelname"}], "callback": () => {console.log('Node 3 callback')}, "type": "label", "color": color.label, "active": false},
+
+              
+
+              {"title": "Add", "text": "$<param> = $<param> + $<param>", "params": [{"type": "number", "value": "0", "name": "tolabel"}, {"type": "number", "value": "0", "name": "tolabel"}, {"type": "number", "value": "0", "name": "tolabel"}], "callback": 
+              (params, registers, setRegister) => {
+                console.log(params)
+                setRegister(params[0], registers[params[1]] + registers[params[2]]);
+              }, "type": "normal", "color": color.normal, "active": false}, 
+              
+              
+              {"title": "Jump if Less", "text": "<param> $<param> < $<param>", "params": [{"type": "text", "value": "label1", "name": "tolabel"}, {"type": "number", "value": "0", "name": "tolabel"}, {"type": "number", "value": "1", "name": "tolabel"}], "callback": 
+              (params, registers, setRegister) => {
+                return registers[params[1]] < registers[params[2]];
+              }, "type": "jump", "color": color.normal, "active": false}], 
           position: { x: 50, y: 50 } 
       }
   ]);
 
+  const [registers, setRegisters] = useState([1, 64, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+
+  const setRegister = (index, value) => {
+    setRegisters((prevRegisters) => {
+      const newRegisters = [...prevRegisters];
+      newRegisters[index] = value;
+      return newRegisters;
+    });
+  }
 
   return (
     <div className="app">
@@ -31,7 +66,10 @@ function App() {
 
       <button
         className={"control-button " + (playing ? "stop-button" : "play-button")}
-        onClick={() => setPlaying(!playing)}>{playing ? "Stop" : "Play"}</button>
+        onClick={() => {
+            setPlaying((prev) => !prev)
+            setRegisters(() => [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+          }}>{playing ? "Stop" : "Play"}</button>
 
 
 
@@ -57,8 +95,10 @@ function App() {
           </div>
           
         </div>
-        <Canvas className='canvas' playing={playing} setPlaying={setPlaying} blocks={blocks} setBlocks={setBlocks}></Canvas>
-        <div className='right'></div>
+        <Canvas className='canvas' playing={playing} setPlaying={setPlaying} blocks={blocks} setBlocks={setBlocks} registers={registers} setRegister={setRegister}></Canvas>
+        <div className='right'>
+          <Registers registers={registers}></Registers>
+        </div>
       </div>
 
       

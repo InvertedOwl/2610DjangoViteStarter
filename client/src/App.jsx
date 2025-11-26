@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Canvas } from './components/Canvas'
 import Node from './components/Node'
 import './App.css'
@@ -56,6 +56,66 @@ function App() {
     });
   }
 
+  const [paletteDrag, setPaletteDrag] = useState(null);
+
+  function handlePaletteDragStart(node, e, nodeRect) {
+    const startNodeOffsetX = nodeRect ? (e.clientX - nodeRect.left) : 0;
+    const startNodeOffsetY = nodeRect ? (e.clientY - nodeRect.top) : 0;
+
+    setBlocks((prev) => {
+      const newBlocks = [...prev];
+      const nodeCopy = JSON.parse(JSON.stringify(node));
+      const canvasEl = document.querySelector('.canvas');
+      const canvasRect = canvasEl ? canvasEl.getBoundingClientRect() : null;
+      const clientX = e.clientX;
+      const clientY = e.clientY;
+      const x = canvasRect ? clientX - canvasRect.left - startNodeOffsetX : clientX - startNodeOffsetX;
+      const y = canvasRect ? clientY - canvasRect.top - startNodeOffsetY : clientY - startNodeOffsetY;
+
+      newBlocks.push({ children: [nodeCopy], position: { x, y } });
+      const newIndex = newBlocks.length - 1;
+      // start tracking this palette-created block
+      setPaletteDrag({ blockId: newIndex, startNodeOffsetX, startNodeOffsetY, lastX: clientX, lastY: clientY });
+      return newBlocks;
+    });
+  }
+
+  useEffect(() => {
+    if (!paletteDrag) return;
+
+    function onMove(e) {
+      const canvasEl = document.querySelector('.canvas');
+      const canvasRect = canvasEl ? canvasEl.getBoundingClientRect() : null;
+      const clientX = e.clientX;
+      const clientY = e.clientY;
+      const x = canvasRect ? clientX - canvasRect.left - (paletteDrag.startNodeOffsetX || 0) : clientX - (paletteDrag.startNodeOffsetX || 0);
+      const y = canvasRect ? clientY - canvasRect.top - (paletteDrag.startNodeOffsetY || 0) : clientY - (paletteDrag.startNodeOffsetY || 0);
+
+      setBlocks((prev) => {
+        if (!prev[paletteDrag.blockId]) return prev;
+        const newBlocks = [...prev];
+        newBlocks[paletteDrag.blockId] = { ...newBlocks[paletteDrag.blockId], position: { x, y } };
+        return newBlocks;
+      });
+
+      setPaletteDrag((p) => p ? { ...p, lastX: clientX, lastY: clientY } : p);
+    }
+
+    function onUp() {
+      setPaletteDrag(null);
+      document.removeEventListener('mousemove', onMove);
+      document.removeEventListener('mouseup', onUp);
+    }
+
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup', onUp);
+
+    return () => {
+      document.removeEventListener('mousemove', onMove);
+      document.removeEventListener('mouseup', onUp);
+    };
+  }, [paletteDrag]);
+
   return (
     <div className="app">
       <Nav></Nav>
@@ -76,23 +136,18 @@ function App() {
       <div className='body'>
         <div className='left'>
 
-          <div>
             {
               nodes.map((node, index) => (
                 <Node 
                 key={index} 
                 node={node} 
-                onDragStart={(e, rect) => {
-                  console.log("Drag started");
-                }}
-                onDragEnd={(e, rect) => handleDragEnd(index, e, rect)}
+                onDragStart={(e, rect) => handlePaletteDragStart(node, e, rect)}
                 connectedleft={false}
                 connectedright={false}
                 display={true}
                 />
               ))
             }
-          </div>
           
         </div>
         <Canvas className='canvas' playing={playing} setPlaying={setPlaying} blocks={blocks} setBlocks={setBlocks} registers={registers} setRegister={setRegister}></Canvas>

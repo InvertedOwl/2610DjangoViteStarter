@@ -42,6 +42,9 @@
     box-shadow: 1px 10px 24px 0px rgba(0,0,0,0.25);
     position: relative;
     z-index: 9;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 .right {
     width: 280px;

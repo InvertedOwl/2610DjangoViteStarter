@@ -2,7 +2,9 @@
 const color = {
     "start": "#06d6a0",
     "normal": "#f1c253ff",
-    "label": "#ef476f"
+    "label": "#ef476f",
+    "action": "#118AB2",
+    "special": "#8B85C1"
 };
 
 const nodes = [
@@ -38,6 +40,7 @@ const nodes = [
     
 
     // Jmps
+    {"title": "Label", "text": "<param>", "params": [{"type": "text", "value": "name", "name": "labelname"}], "callback": () => {console.log('Node 3 callback')}, "type": "label", "color": color.label, "active": false},    
     {"title": "Jump", "text": "<param>", "params": [{"type": "text", "value": "name", "name": "tolabel"}, {"type": "number", "value": "0", "name": "tolabel"}, {"type": "number", "value": "0", "name": "tolabel"}], "callback": 
     (params, registers, setRegister) => {
         return true;
@@ -59,8 +62,15 @@ const nodes = [
         return registers[params[1]] != registers[params[2]];
     }, "type": "jump", "color": color.label, "active": false},
 
-    // Special
-    {"title": "Label", "text": "<param>", "params": [{"type": "text", "value": "name", "name": "labelname"}], "callback": () => {console.log('Node 3 callback')}, "type": "label", "color": color.label, "active": false},    
+    // Actions
+    {"title": "Print I", "text": "<param>", "params": [{"type": "text", "value": "Hello, World!", "name": "tolabel"}], "callback": 
+    (params, registers, setRegister, addToConsole) => {
+        addToConsole(`${params[0]}`);
+    }, "type": "action", "color": color.action, "active": false},
+    {"title": "Print", "text": "$<param>", "params": [{"type": "number", "value": "0", "name": "tolabel"}], "callback": 
+    (params, registers, setRegister, addToConsole) => {
+        addToConsole(registers[params[0]] + "");
+    }, "type": "action", "color": color.action, "active": false},
 ];
 
 export { nodes, color };

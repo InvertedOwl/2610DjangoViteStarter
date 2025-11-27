@@ -1,0 +1,25 @@
+.console-container {
+    color: white;
+    margin: 20px;
+    padding: 10px;
+    background-color: #1e232c;
+    border-radius: 8px;
+    font-family: monospace;
+    font-size: 15px;
+}
+
+.console-output {
+    height: 200px;
+    overflow-y: auto;
+    background-color: #2a2f3a;
+    padding: 10px;
+    border-radius: 4px;
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column-reverse;
+}
+
+.console-output p {
+    margin: 0;
+    line-height: 1.4;
+}

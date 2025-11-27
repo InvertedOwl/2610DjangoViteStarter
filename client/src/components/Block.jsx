@@ -10,25 +10,11 @@ export const Block = (props) => {
 
     const dragRef = useRef({ active: false, blockId: null, nodeIndex: null, lastX: 0, lastY: 0, startX: 0, startY: 0 });
 
-    const getCanvasCoords = (e) => {
-        const canvasRect = props.canvasRef.current?.getBoundingClientRect();
-        if (!canvasRect) return { x: e.clientX, y: e.clientY }; // fallback
-
-        return {
-            x: e.clientX - canvasRect.left,
-            y: e.clientY - canvasRect.top,
-        };
-    };
-
-
     // Remove event listeners after unmount
     useEffect(() => {
         return () => {
-            if (dragRef.current.active) {
-                document.removeEventListener("mousemove", handleDocumentMove);
-                document.removeEventListener("mouseup", handleDocumentUp);
-                dragRef.current.active = false;
-            }
+            document.removeEventListener("mousemove", handleDocumentMove);
+            document.removeEventListener("mouseup", handleDocumentUp);
         };
     }, []);
 
@@ -54,7 +40,7 @@ export const Block = (props) => {
         dragRef.current.active = false;
     };
 
-    // Handle click event from node
+    // Handle click event from node (was propagated to here)
     function handleDragStart(nodeIndex, e, nodeRect) {
         const startNodeOffsetX = nodeRect ? (e.clientX - nodeRect.left) : 0;
         const startNodeOffsetY = nodeRect ? (e.clientY - nodeRect.top) : 0;
@@ -82,7 +68,6 @@ export const Block = (props) => {
 
     // Handle un-drag from node
     function handleDragEnd(nodeIndex, e, nodeRect) {
-        const { x: canvasX, y: canvasY } = getCanvasCoords(e);
         const canvasRect = props.canvasRef.current?.getBoundingClientRect();
         if (!canvasRect) return;
 
@@ -95,8 +80,22 @@ export const Block = (props) => {
         const selfTop = selfBlockRect.top - canvasRect.top;
         const selfBottom = selfBlockRect.bottom - canvasRect.top;
 
+        const shouldDelete = (() => {
+            const currentX = blockData.position?.x || 0;
+            return (currentX < 0);
+        })();
 
-        // Lock to screen edges
+        if (shouldDelete) {
+            setBlockData((prevBlocks) => {
+                const newBlocks = [...prevBlocks];
+                if (props.id < 0 || props.id >= newBlocks.length) return prevBlocks;
+                newBlocks.splice(props.id, 1);
+                return newBlocks;
+            });
+            return;
+        }
+
+        // Otherwise clamp to canvas as before
         setBlockData((prevBlocks) => {
             const newBlocks = [...prevBlocks];
             const targetBlock = { ...newBlocks[props.id] };
@@ -113,7 +112,6 @@ export const Block = (props) => {
             // Ignore self
             if (b === props.id) continue;
 
-            // Find the actual DOM element for this iterated block
             const blockEl = document.querySelector(`.block[data-block-id="${b}"]`);
             if (!blockEl) continue;
 
@@ -137,7 +135,6 @@ export const Block = (props) => {
                     const targetBlock = { ...newBlocks[props.id] };
                     const sourceBlock = { ...newBlocks[b] };
 
-                    // Append target children to the source
                     sourceBlock.children = sourceBlock.children.concat(
                         targetBlock.children
                     );
@@ -226,9 +223,9 @@ return (
         onDragStart={(e, rect) => handleDragStart(index, e, rect)}
         onDragEnd={(e, rect) => handleDragEnd(index, e, rect)}
         blocks={props.blocks}
-        blockid={props.id}          // <--- use props.id, not props.index
+        blockid={props.id}
         nodeid={index}
-        setBlockData={setBlockData} // <--- pass the function you actually have
+        setBlockData={setBlockData}
         connectedleft={index > 0}
         connectedright={
             index < blockData.children.length - 1 &&

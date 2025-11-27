@@ -6,6 +6,7 @@ import { nodes } from './nodes.js';
 import { color } from './nodes.js';
 import { Nav } from './Nav.jsx';
 import { Registers } from './components/Registers.jsx';
+import { Console } from './components/Console.jsx';
 
 function App() {
   const [playing, setPlaying] = useState(false);
@@ -46,7 +47,9 @@ function App() {
       }
   ]);
 
-  const [registers, setRegisters] = useState([1, 64, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+  const [registers, setRegisters] = useState([0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+
+  const [consoleLines, setConsoleLines] = useState(["test1", "test2"]);
 
   const setRegister = (index, value) => {
     setRegisters((prevRegisters) => {
@@ -54,6 +57,10 @@ function App() {
       newRegisters[index] = value;
       return newRegisters;
     });
+  }
+
+  const addConsoleLine = (line) => {
+    setConsoleLines((prevLines) => [...prevLines, line]);
   }
 
   const [paletteDrag, setPaletteDrag] = useState(null);
@@ -121,9 +128,6 @@ function App() {
     <div className="app">
       <Nav></Nav>
 
-      <div className="node-palette">
-        
-      </div>
 
       <button
         className={"control-button " + (playing ? "stop-button" : "play-button")}
@@ -151,9 +155,10 @@ function App() {
             }
           
         </div>
-        <Canvas className='canvas' playing={playing} setPlaying={setPlaying} blocks={blocks} setBlocks={setBlocks} registers={registers} setRegister={setRegister}></Canvas>
+        <Canvas className='canvas' playing={playing} setPlaying={setPlaying} blocks={blocks} setBlocks={setBlocks} registers={registers} setRegister={setRegister} addConsoleLine={addConsoleLine}></Canvas>
         <div className='right'>
           <Registers registers={registers}></Registers>
+          <Console lines={consoleLines}></Console>
         </div>
       </div>
 

@@ -68,7 +68,7 @@ export const Canvas = (props) => {
 
             setNodeActive(item.blockid, item.nodeindex, true);
             await new Promise(r => setTimeout(r, 250));
-            const result = await node.callback(node.params.map(param => param.value), registersRef.current, props.setRegister);
+            const result = await node.callback(node.params.map(param => param.value), registersRef.current, props.setRegister, props.addConsoleLine);
             setNodeActive(item.blockid, item.nodeindex, false);
 
             if (!playingRef.current) {

@@ -63,6 +63,13 @@ export function ScriptPage() {
     setConsoleLines((prevLines) => [...prevLines, line]);
   }
 
+  // Clear the in-app console whenever playback starts
+  useEffect(() => {
+    if (playing) {
+      setConsoleLines([]);
+    }
+  }, [playing]);
+
   const [paletteDrag, setPaletteDrag] = useState(null);
 
   function handlePaletteDragStart(node, e, nodeRect) {

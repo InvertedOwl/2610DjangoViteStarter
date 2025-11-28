@@ -52,6 +52,8 @@ export const Nav = (props) => {
             </div>
 
             <div className="nav-right">
+                <span className="share">Share</span>
+
                 {user ? (
                     <span>Welcome, <a href="">{user.first_name}</a></span>
                 ) : (

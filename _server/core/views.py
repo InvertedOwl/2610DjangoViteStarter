@@ -27,4 +27,7 @@ def index(req):
 @login_required
 def get_me(req):
     user = req.user
-    return JsonResponse({"user": model_to_dict(user)})
+    # Remove password before sending user data
+    user_dict = model_to_dict(user)
+    user_dict.pop("password", None)
+    return JsonResponse({"user": user_dict})

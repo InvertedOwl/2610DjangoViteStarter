@@ -1,23 +1,30 @@
 import React, { useEffect, useRef } from 'react';
 import './SettingsPopup.css';
-import { parseCookie } from 'cookie';
+import { parse as parseCookie } from 'cookie';
 
 export const SettingsPopup = (props) => {
   const blocks = props.blocks;
 
-  const saveScript = () => {
-    const scriptData = { "script_json": blocks, "title": "My Script", "id": 1 };
+  const saveScript = async () => {
+    const scriptData = { "script_json": blocks, "title": "My Script", "id": parseCookie(document.cookie).script_id || null };
     const scriptJSON = JSON.stringify(scriptData, null, 2);
 
-    fetch("/script/", {
+
+    const response = await fetch("/script/", {
       method: "POST",
-      headers: {
+        headers: {
         "Content-Type": "application/json",
         "X-CSRFToken": parseCookie(document.cookie).csrftoken
       },
       credentials: 'same-origin',
       body: scriptJSON,
     })
+
+    const data = await response.json();
+    if (data.script_id) {
+      document.cookie = `script_id=${data.script_id}; path=/;`;
+    }
+
     console.log(scriptJSON);
   }
 

@@ -5,6 +5,8 @@ import { Link, NavLink } from "react-router-dom";
 export const Nav = (props) => {
     const [user, setUser] = useState(null);
 
+    
+
     const getUser = async () => {
         const res = await fetch('/me/', {
             credentials: 'same-origin'
@@ -53,9 +55,8 @@ export const Nav = (props) => {
 
             <div className="nav-right">
                 {/* Material symbol icon; the text content (icon name) is required. */}
-                <span class="material-symbols-outlined settings">
-                discover_tune
-                </span>
+                {/* settings moved to Script page */}
+
                 <span className="share">Share</span>
 
                 {user ? (

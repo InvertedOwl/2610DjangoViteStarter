@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import SettingsPopup from './components/SettingsPopup';
 import { Canvas } from './components/Canvas'
 import Node from './components/Node'
 import './ScriptPage.css'
@@ -10,6 +11,7 @@ import { Console } from './components/Console.jsx';
 
 export function ScriptPage() {
   const [playing, setPlaying] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
 
   const [blocks, setBlocks] = useState([
       { 
@@ -50,6 +52,12 @@ export function ScriptPage() {
   const [registers, setRegisters] = useState([0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
 
   const [consoleLines, setConsoleLines] = useState(["test1", "test2"]);
+
+  const [settings, setSettings] = useState({
+    numRegisters: 10,
+    executionSpeed: 500,
+    hyperspeed: false,
+  });
 
   const setRegister = (index, value) => {
     setRegisters((prevRegisters) => {
@@ -133,6 +141,17 @@ export function ScriptPage() {
 
   return (
     <div className="app">
+
+      <span
+        className={"material-symbols-outlined settings" + (showSettings ? " settingsactive" : "")}
+        role="button"
+        aria-label="Open settings"
+        tabIndex={0}
+        onClick={() => setShowSettings((s) => !s)}
+      >
+        discover_tune
+      </span>
+      {showSettings && <SettingsPopup  />}
 
       <button
         className={"control-button " + (playing ? "stop-button" : "play-button")}

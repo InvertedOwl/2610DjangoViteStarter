@@ -5,4 +5,5 @@ urlpatterns = [
     path('', view=views.index, name="index"),
     path('me/', view=views.get_me, name="get_me"),
     path('script/', view=views.script, name="script"),
+    path('scripts/', view=views.scripts, name="scripts"),
 ]

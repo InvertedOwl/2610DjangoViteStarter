@@ -4,8 +4,6 @@ import { Canvas } from './components/Canvas'
 import Node from './components/Node'
 import './ScriptPage.css'
 import { nodes } from './nodes.js';
-import { color } from './nodes.js';
-import { Nav } from './components/Nav.jsx';
 import { Registers } from './components/Registers.jsx';
 import { Console } from './components/Console.jsx';
 import { parse as parseCookie } from 'cookie';
@@ -139,6 +137,11 @@ export function ScriptPage() {
 
 return (
     <div className="app">
+
+      <div className='title'>
+        <input type="text" placeholder='Title'/>
+      </div>
+
 
       <span
         className={"material-symbols-outlined settings" + (showSettings ? " settingsactive" : "")}

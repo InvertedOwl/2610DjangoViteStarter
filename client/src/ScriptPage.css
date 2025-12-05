@@ -46,7 +46,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    height: calc(100vh - 73px);
+    height: calc(100vh - 35px);
     overflow: scroll;
     flex: 0 0 180px;
     min-width: 180px;
@@ -84,4 +84,19 @@
     background-color: white;
     color: #20242c;
     border-radius: 200px;
+}
+
+/* Position in center */
+.title {
+    position: absolute;
+    top: 10px;
+    left: calc(50% - 100px);
+    z-index: 20;
+}
+
+.title > input {
+    font-size: 20px;
+    border-radius: 100px;
+    padding: 8px;
+    border: none;
 }
